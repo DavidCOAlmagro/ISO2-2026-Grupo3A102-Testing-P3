@@ -22,7 +22,9 @@ mvn verify
 ```
 
 - Test results (Surefire): `target/surefire-reports`
-- Coverage report (JaCoCo): `target/site/jacoco/index.html`. The build fails if less than 80 % of the lines are covered.
+- Coverage report (JaCoCo): `target/site/jacoco/index.html`. The minimum is 80 % of the lines.
+
+> Until Step 3 the coverage check only shows a warning (`haltOnFailure` is `false` in `pom.xml`), because the program is written before its tests. Pair 2 sets `haltOnFailure` to `true` in Step 3.
 
 ## Structure
 
@@ -34,15 +36,15 @@ mvn verify
 
 ## Decisions on the statement
 
-The statement does not answer these questions. Pair 3 agrees on them before the code is merged into `develop`.
+The statement leaves these questions open. These are the answers the program follows, so that Pair 1 can design the tests from them. New decisions are added as Q9, Q10…
 
-| # | Question | Answer |
-|---|---|---|
-| Q1 | Which values are valid for moisture, temperature and time, and what happens with invalid ones? | *pending* |
-| Q2 | Are 12:00 and 16:00 inside the peak solar radiation hours? | *pending* |
-| Q3 | When several rules apply at the same time, which one wins? | *pending* |
-| Q4 | During peak hours, with moisture below 10 % and rain forecast: Critical Watering or Do Not Water? | *pending* |
-| Q5 | Does Critical Watering apply outside peak hours? | *pending* |
-| Q6 | Does "between 20 % and 40 %" include 20 and 40? | *pending* |
-| Q7 | What does the program say when a watering is postponed during peak hours, and when no rule applies? | *pending* |
-| Q8 | Is "imminent rain" the same as "rain forecast within the next 24 hours"? | *pending* |
+| # | Question | Answer | Why |
+|---|---|---|---|
+| Q1 | Which values are valid, and what happens with invalid ones? | Moisture from 0 to 100 % (both included); temperature any finite number; time required. Otherwise the constructor throws an exception. | A percentage cannot be outside 0–100, and the statement gives no temperature range, so we do not invent one. |
+| Q2 | Are 12:00 and 16:00 inside the peak hours? | 12:00 is inside, 16:00 is outside (from 12:00 to 15:59). | At 4:00 PM the peak ends, and this way each time belongs to only one period. |
+| Q3 | When several rules apply at the same time, which one wins? | In this order: 1) Emergency Drainage, 2) Critical Watering, 3) Do Not Water, 4) Heavy or Light Watering, which are postponed in peak hours. | Drainage protects the roots from freezing and is not a watering cycle; Critical Watering is the only exception the statement gives to the peak hours rule. |
+| Q4 | Peak hours, moisture below 10 % and rain forecast: Critical Watering or Do Not Water? | Critical Watering. | The statement says "unless soil moisture drops below 10 %" without any exception for rain. |
+| Q5 | Does Critical Watering apply outside peak hours? | No: outside peak hours the normal rules apply (for example, moisture below 10 %, more than 25 °C and no rain gives Heavy Watering). | The statement only names this protocol inside the peak hours. |
+| Q6 | Does "between 20 % and 40 %" include 20 and 40? | Yes, both. | Heavy Watering is "below 20 %", so 20 % must belong to Light Watering to leave no gap. |
+| Q7 | What is the output when a watering is postponed, and when no rule applies? | Two outputs of our own: "Postpone Watering" and "No Action". | The statement asks to postpone but names no output, and a separate output lets the tests tell these cases apart from "Do Not Water". |
+| Q8 | Is "imminent rain" the same as "rain forecast within the next 24 hours"? | Yes: one yes/no input, "rain forecast in the next 24 hours". | The statement only gives one rain forecast as input, and a second one would add a variable with no rule of its own. |

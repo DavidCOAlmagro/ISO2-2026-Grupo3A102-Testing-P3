@@ -39,7 +39,8 @@
                 <version>${surefire.version}</version>
             </plugin>
 
-            <!-- Test coverage: report in target/site/jacoco and a minimum of 80 % of lines (statement, Step 3) -->
+            <!-- Test coverage: report in target/site/jacoco and a minimum of 80 % of lines (statement, Step 3).
+                 Until Step 3 the check only warns (haltOnFailure false), because the tests are written by Pair 2. -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -65,6 +66,8 @@
                             <goal>check</goal>
                         </goals>
                         <configuration>
+                            <!-- Only a warning until Step 3: Pair 2 sets it to true when the tests are written -->
+                            <haltOnFailure>false</haltOnFailure>
                             <rules>
                                 <rule>
                                     <element>BUNDLE</element>
