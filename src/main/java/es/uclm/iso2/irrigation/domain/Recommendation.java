@@ -33,7 +33,8 @@ public enum Recommendation {
     }
 
     /**
-     * Returns the name of the recommendation as the statement writes it.
+     * Returns the name of the recommendation: the one of the statement, or our own name
+     * for Postpone Watering and No Action (Q7).
      *
      * @return the text to show to the user, for example {@code "Heavy Watering"}
      */
