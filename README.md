@@ -55,11 +55,14 @@ Everything needed for the sections of TW.02.01, taken from the decisions above. 
 
 *Why this section:* Pair 1 did not write the program. With the inputs, outputs, decision table and limits in one place, they can write the pseudocode, the variables, the equivalence classes, the boundary values and the decision and MC/DC coverage without guessing what the code does.
 
-**Methods to test** *(to complete with T2)*
+**Methods to test** (package `es.uclm.iso2.irrigation.domain`)
 
 | Class | Method | Throws |
 |---|---|---|
-| *to complete* | *to complete* | *to complete* |
+| `GreenhouseConditions` | constructor `GreenhouseConditions(double soilMoisture, double temperature, boolean rainForecast, LocalTime timeOfDay)`: validates the inputs (Q1) | `InvalidReadingException` (a subclass of `IllegalArgumentException`) if the moisture is NaN or outside 0–100, the temperature is NaN or infinite, or the time is `null` |
+| `GreenhouseConditions` | `Recommendation recommend()`: the decision table below, one `if` per row in the same order | nothing |
+
+The outputs are the values of the enum `Recommendation`: `EMERGENCY_DRAINAGE`, `CRITICAL_WATERING`, `DO_NOT_WATER`, `HEAVY_WATERING`, `LIGHT_WATERING`, `POSTPONE_WATERING` and `NO_ACTION`; `getLabel()` returns the text of the statement (for example `"Heavy Watering"`). The limits are the public constants of `GreenhouseConditions` (`CRITICAL_MOISTURE`, `HEAVY_WATERING_MOISTURE`, `LIGHT_WATERING_MOISTURE`, `DRAINAGE_MOISTURE`, `COLD_TEMPERATURE`, `HOT_TEMPERATURE`, `PEAK_START`, `PEAK_END`, `MIN_MOISTURE`, `MAX_MOISTURE`).
 
 **Inputs**
 
