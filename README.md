@@ -51,15 +51,18 @@ The statement leaves these questions open. These are the answers the program fol
 
 ## For Pair 1 – Test design (Step 2)
 
-Everything needed for the sections of TW.02.01, taken from the decisions above. The part marked *to complete* is filled in by Pair 3 when the code of T2 is on `develop`, so that it matches the code exactly.
+Everything needed for the sections of TW.02.01, taken from the decisions above.
 
 *Why this section:* Pair 1 did not write the program. With the inputs, outputs, decision table and limits in one place, they can write the pseudocode, the variables, the equivalence classes, the boundary values and the decision and MC/DC coverage without guessing what the code does.
 
-**Methods to test** *(to complete with T2)*
+**Methods to test** (package `es.uclm.iso2.irrigation.domain`)
 
 | Class | Method | Throws |
 |---|---|---|
-| *to complete* | *to complete* | *to complete* |
+| `GreenhouseConditions` | constructor `GreenhouseConditions(double soilMoisture, double temperature, boolean rainForecast, LocalTime timeOfDay)`: validates the inputs (Q1) | `InvalidReadingException` (a subclass of `IllegalArgumentException`) if the moisture is NaN or outside 0–100, the temperature is NaN or infinite, or the time is `null` |
+| `GreenhouseConditions` | `Recommendation recommend()`: the rules in the same order as the decision table below | nothing |
+
+The outputs are the values of the enum `Recommendation`: `EMERGENCY_DRAINAGE`, `CRITICAL_WATERING`, `DO_NOT_WATER`, `HEAVY_WATERING`, `LIGHT_WATERING`, `POSTPONE_WATERING` and `NO_ACTION`; `getLabel()` returns the text to show (for example `"Heavy Watering"`): the name in the statement, or our own name for "Postpone Watering" and "No Action" (Q7). The limits are the public constants of `GreenhouseConditions` (`CRITICAL_MOISTURE`, `HEAVY_WATERING_MOISTURE`, `LIGHT_WATERING_MOISTURE`, `DRAINAGE_MOISTURE`, `COLD_TEMPERATURE`, `HOT_TEMPERATURE`, `PEAK_START`, `PEAK_END`, `MIN_MOISTURE`, `MAX_MOISTURE`).
 
 **Inputs**
 
@@ -79,11 +82,12 @@ Everything needed for the sections of TW.02.01, taken from the decisions above. 
 | 1 | moisture > 60 and temperature < 5 | Emergency Drainage |
 | 2 | peak hours and moisture < 10 | Critical Watering |
 | 3 | rain forecast and moisture < 40 | Do Not Water |
-| 4 | no rain, temperature > 25 and moisture < 20 | Heavy Watering, or Postpone Watering in peak hours |
-| 5 | no rain, temperature > 25 and 20 ≤ moisture ≤ 40 | Light Watering, or Postpone Watering in peak hours |
-| 6 | none of the above | No Action |
+| 4 | no rain, temperature > 25 and moisture ≤ 40 | a watering: 4a) Postpone Watering in peak hours; 4b) otherwise Heavy Watering if moisture < 20; 4c) otherwise Light Watering (20 ≤ moisture ≤ 40, Q6) |
+| 5 | none of the above | No Action |
 
 Peak hours: from 12:00 (included) to 16:00 (not included) (Q2).
+
+*Note for MC/DC:* with rain, moisture below 40 already returns Do Not Water in row 3, so "no rain" in row 4 only decides the result when moisture is exactly 40 (with rain: No Action; without rain: a watering). Use moisture 40 to cover it.
 
 **Limits that appear in the rules**: moisture 0, 10, 20, 40, 60 and 100 %; temperature 5 and 25 °C; time 12:00 and 16:00.
 *Why:* boundary value analysis tests the values on and next to each limit, so they are listed here and are named constants in the code.
