@@ -77,8 +77,13 @@ public class GreenhouseConditions {
      *   <li>moisture &gt; 60 and temperature &lt; 5: Emergency Drainage</li>
      *   <li>peak hours and moisture &lt; 10: Critical Watering (Q4, Q5)</li>
      *   <li>rain forecast and moisture &lt; 40: Do Not Water</li>
-     *   <li>no rain, temperature &gt; 25 and moisture &lt; 20: Heavy Watering, or Postpone Watering in peak hours</li>
-     *   <li>no rain, temperature &gt; 25 and 20 &le; moisture &le; 40: Light Watering, or Postpone Watering in peak hours</li>
+     *   <li>no rain, temperature &gt; 25 and moisture &le; 40: a watering, which is
+     *     <ol>
+     *       <li>Postpone Watering in peak hours</li>
+     *       <li>Heavy Watering if moisture &lt; 20</li>
+     *       <li>Light Watering otherwise (20 &le; moisture &le; 40, Q6)</li>
+     *     </ol>
+     *   </li>
      *   <li>otherwise: No Action (Q7)</li>
      * </ol>
      * Peak hours go from 12:00 (included) to 16:00 (not included) (Q2).
@@ -97,16 +102,12 @@ public class GreenhouseConditions {
         if (rainForecast && soilMoisture < LIGHT_WATERING_MOISTURE) {
             return Recommendation.DO_NOT_WATER;
         }
-        if (!rainForecast && temperature > HOT_TEMPERATURE && soilMoisture < HEAVY_WATERING_MOISTURE) {
+        if (!rainForecast && temperature > HOT_TEMPERATURE && soilMoisture <= LIGHT_WATERING_MOISTURE) {
             if (peakHours) {
                 return Recommendation.POSTPONE_WATERING;
             }
-            return Recommendation.HEAVY_WATERING;
-        }
-        if (!rainForecast && temperature > HOT_TEMPERATURE
-                && soilMoisture >= HEAVY_WATERING_MOISTURE && soilMoisture <= LIGHT_WATERING_MOISTURE) {
-            if (peakHours) {
-                return Recommendation.POSTPONE_WATERING;
+            if (soilMoisture < HEAVY_WATERING_MOISTURE) {
+                return Recommendation.HEAVY_WATERING;
             }
             return Recommendation.LIGHT_WATERING;
         }

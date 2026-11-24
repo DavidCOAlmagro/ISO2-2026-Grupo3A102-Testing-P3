@@ -82,9 +82,8 @@ The outputs are the values of the enum `Recommendation`: `EMERGENCY_DRAINAGE`, `
 | 1 | moisture > 60 and temperature < 5 | Emergency Drainage |
 | 2 | peak hours and moisture < 10 | Critical Watering |
 | 3 | rain forecast and moisture < 40 | Do Not Water |
-| 4 | no rain, temperature > 25 and moisture < 20 | Heavy Watering, or Postpone Watering in peak hours |
-| 5 | no rain, temperature > 25 and 20 ≤ moisture ≤ 40 | Light Watering, or Postpone Watering in peak hours |
-| 6 | none of the above | No Action |
+| 4 | no rain, temperature > 25 and moisture ≤ 40 | a watering: 4a) Postpone Watering in peak hours; 4b) otherwise Heavy Watering if moisture < 20; 4c) otherwise Light Watering (20 ≤ moisture ≤ 40, Q6) |
+| 5 | none of the above | No Action |
 
 Peak hours: from 12:00 (included) to 16:00 (not included) (Q2).
 
