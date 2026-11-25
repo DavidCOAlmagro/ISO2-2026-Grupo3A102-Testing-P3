@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -25,8 +26,12 @@ import java.util.Scanner;
  */
 public class IrrigationConsole {
 
-    /** Format of the time of day: hours (0–23) and minutes, for example {@code 9:30} or {@code 14:05}. */
-    private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("H:mm");
+    /**
+     * Format of the time of day: hours (0–23) and minutes, for example {@code 9:30} or {@code 14:05}.
+     * The strict resolver rejects {@code 24:00} instead of turning it into {@code 00:00}.
+     */
+    private static final DateTimeFormatter TIME_FORMAT =
+            DateTimeFormatter.ofPattern("H:mm").withResolverStyle(ResolverStyle.STRICT);
 
     private final Scanner in;
     private final PrintStream out;
@@ -153,7 +158,7 @@ public class IrrigationConsole {
             try {
                 return LocalTime.parse(text, TIME_FORMAT);
             } catch (DateTimeParseException e) {
-                out.println("'" + text + "' is not a time. Use HH:mm in 24 h, for example 14:30.");
+                out.println("'" + text + "' is not a time. Use HH:mm from 00:00 to 23:59, for example 14:30.");
             }
         }
     }

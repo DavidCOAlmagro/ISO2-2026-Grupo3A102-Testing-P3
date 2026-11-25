@@ -39,6 +39,20 @@
                 <version>${surefire.version}</version>
             </plugin>
 
+            <!-- Runnable JAR: java -jar target/ISO2-2026-Grupo3A102-Testing-P3-0.1.0-SNAPSHOT.jar (issue #4) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>es.uclm.iso2.irrigation.ui.IrrigationConsole</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
             <!-- Test coverage: report in target/site/jacoco and a minimum of 80 % of lines (statement, Step 3).
                  Until Step 3 the check only warns (haltOnFailure false), because the tests are written by Pair 2. -->
             <plugin>

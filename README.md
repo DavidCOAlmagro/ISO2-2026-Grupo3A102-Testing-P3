@@ -29,11 +29,11 @@ mvn verify
 ## Run the program
 
 ```
-mvn compile
-java -cp target/classes es.uclm.iso2.irrigation.ui.IrrigationConsole
+mvn package
+java -jar target/ISO2-2026-Grupo3A102-Testing-P3-0.1.0-SNAPSHOT.jar
 ```
 
-The program asks for the soil moisture (%), the temperature (°C), whether rain is forecast in the next 24 hours (`y`/`n`) and the time of day (`HH:mm`, 24 h), and shows the recommendation. Decimal numbers are written with a dot, for example `35.5`. It handles one set of conditions per run.
+The program asks for the soil moisture (%), the temperature (°C), whether rain is forecast in the next 24 hours (`y`/`n`) and the time of day (`HH:mm`, from `00:00` to `23:59`; `24:00` is not accepted), and shows the recommendation. Decimal numbers are written with a dot, for example `35.5`. It handles one set of conditions per run.
 
 - If a value is not a number, not `y`/`n` or not a time, the program explains why and asks for that value again.
 - If the data are out of range (Q1), the domain rejects them: the program shows the reason and asks for the four values again.
