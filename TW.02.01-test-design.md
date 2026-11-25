@@ -152,22 +152,22 @@ _Test design matrix with all 5 decision table rows covered, including boundary v
 | TC-10 | 5 | 3 | false | 13:00 | Critical Watering | 2 |
 | TC-11 | 5 | 3 | true | 10:00 | Do Not Water | 3 |
 | TC-12 | 35 | 30 | true | 13:00 | Do Not Water | 3 |
-| TC-13 | 35 | 30 | false | 13:00 | Postpone Watering | 4a | ✓ |
-| TC-14 | 25 | 30 | false | 13:00 | Light Watering | 4c |
-| TC-15 | 20 | 30 | false | 13:00 | Light Watering | 4c (Q6: 20 ≤ moisture ≤ 40) |
-| TC-16 | 19 | 30 | false | 13:00 | Heavy Watering | 4b (moisture < 20) |
+| TC-13 | 35 | 30 | false | 13:00 | Postpone Watering | 4a |
+| TC-14 | 25 | 30 | false | 13:00 | Postpone Watering | 4a |
+| TC-15 | 20 | 30 | false | 13:00 | Postpone Watering | 4a |
+| TC-16 | 19 | 30 | false | 13:00 | Postpone Watering | 4a |
 | TC-17 | 15 | 30 | true | 13:00 | Do Not Water | 3 |
 | TC-18 | 80 | 30 | false | 13:00 | No Action | 5 |
 | TC-19 | 80 | 30 | true | 13:00 | No Action | 5 |
 | TC-20 | 95 | 3 | true | 13:00 | Emergency Drainage | 1 |
-| TC-21 | 95 | 6 | true | 13:00 | Critical Watering | 2 |
-| TC-22 | 95 | 6 | false | 13:00 | Critical Watering | 2 |
+| TC-21 | 95 | 6 | true | 13:00 | No Action | 5 |
+| TC-22 | 95 | 6 | false | 13:00 | No Action | 5 |
 | TC-23 | 45 | 30 | true | 13:00 | No Action | 5 |
 | TC-24 | 45 | 30 | false | 13:00 | No Action | 5 |
-| TC-25 | 35 | 30 | false | 13:30 | Light Watering | 4c |
-| TC-26 | 25 | 30 | false | 13:30 | Light Watering | 4c |
-| TC-27 | 20 | 30 | false | 13:30 | Light Watering | 4c (Q6) |
-| TC-28 | 19 | 30 | false | 13:30 | Heavy Watering | 4b |
+| TC-25 | 35 | 30 | false | 13:30 | Postpone Watering | 4a |
+| TC-26 | 25 | 30 | false | 13:30 | Postpone Watering | 4a |
+| TC-27 | 20 | 30 | false | 13:30 | Postpone Watering | 4a |
+| TC-28 | 19 | 30 | false | 13:30 | Postpone Watering | 4a |
 | TC-29 | 30 | 30 | true | 11:00 | Do Not Water | 3 |
 | TC-30 | 30 | 30 | false | 11:00 | Light Watering | 4c |
 | TC-31 | 5 | 3 | true | 13:00 | Critical Watering | 2 |
@@ -176,8 +176,8 @@ _Test design matrix with all 5 decision table rows covered, including boundary v
 | TC-34 | 9 | 3 | false | 11:00 | No Action | 5 |
 | TC-35 | 95 | 3 | true | 13:30 (peak) | Emergency Drainage | 1 |
 | TC-36 | 70 | 3 | true | 13:30 (peak) | Emergency Drainage | 1 |
-| TC-37 | 70 | 6 | true | 13:30 (peak) | Critical Watering | 2 |
-| TC-38 | 70 | 6 | false | 13:30 (peak) | Critical Watering | 2 |
+| TC-37 | 70 | 6 | true | 13:30 (peak) | No Action | 5 |
+| TC-38 | 70 | 6 | false | 13:30 (peak) | No Action | 5 |
 | TC-39 | 30 | 30 | true | 11:00 (not peak) | Do Not Water | 3 |
 | TC-40 | 30 | 30 | false | 11:00 (not peak) | Light Watering | 4c |
 | TC-41 | 5 | 3 | true | 13:00 | Critical Watering | 2 |
@@ -198,70 +198,25 @@ _Test design matrix with all 5 decision table rows covered, including boundary v
 
 ---
 
-## 7. MC/DC coverage notes and test pairs
+## 7. MC/DC test pairs
 
-_For MC/DC compliance, we need to demonstrate that each condition independently affects the output. The following test pairs show condition independence:_
+Inputs are listed as soil moisture (%), temperature (C), rain forecast and time. In each pair only the input for the named condition changes. Earlier decisions are false in both cases, so the decision under test is reached. At 40% moisture, D3 is false even when rain is forecast.
 
-### 7.1 Emergency Drainage (Row 1) – moisture > 60 AND temperature < 5
+| Condition | Case A | Expected A | Case B | Expected B |
+|---|---|---|---|---|
+| 1. D1: moisture > 60 | 61 / 3 / false / 10:00 | Emergency Drainage | 60 / 3 / false / 10:00 | No Action |
+| 2. D1: temperature < 5 | 61 / 4 / false / 10:00 | Emergency Drainage | 61 / 5 / false / 10:00 | No Action |
+| 3. D2: peak hours | 9 / 20 / false / 12:00 | Critical Watering | 9 / 20 / false / 11:59 | No Action |
+| 4. D2: moisture < 10 | 9 / 20 / false / 13:00 | Critical Watering | 10 / 20 / false / 13:00 | No Action |
+| 5. D3: rain forecast | 39 / 20 / true / 10:00 | Do Not Water | 39 / 20 / false / 10:00 | No Action |
+| 6. D3: moisture < 40 | 39 / 20 / true / 10:00 | Do Not Water | 40 / 20 / true / 10:00 | No Action |
+| 7. D4: no rain | 40 / 26 / false / 10:00 | Light Watering | 40 / 26 / true / 10:00 | No Action |
+| 8. D4: temperature > 25 | 40 / 26 / false / 10:00 | Light Watering | 40 / 25 / false / 10:00 | No Action |
+| 9. D4: moisture <= 40 | 40 / 26 / false / 10:00 | Light Watering | 41 / 26 / false / 10:00 | No Action |
+| 10. D4a: peak hours | 30 / 26 / false / 15:59 | Postpone Watering | 30 / 26 / false / 16:00 | Light Watering |
+| 11. D4b: moisture < 20 | 19 / 26 / false / 10:00 | Heavy Watering | 20 / 26 / false / 10:00 | Light Watering |
 
-| Test pair | Moisture | Temperature | Expected |
-|-----------|----------|-------------|----------|
-| Pair A | 80 | 3 | Emergency Drainage (row 1) |
-| Pair B | 80 | 6 | No Action (row 5; moisture > 60 but temp ≥ 5, so not row 1) |
-| **Independence**: Changing temperature from 3→6 while moisture=80 changes outcome from Emergency Drainage→No Action, proving temperature independence |
-
-### 7.2 Critical Watering (Row 2) – peak hours AND moisture < 10
-
-| Test pair | Moisture | Time (peak?) | Expected |
-|-----------|----------|--------------|----------|
-| Pair A | 8 | 13:00 (peak) | Critical Watering (row 2) |
-| Pair B | 8 | 10:00 (not peak) | No Action (row 5; not peak hours, so not row 2; moisture 8<10 but no peak) |
-| 
-| Pair C | 50 | 3 | No Action (row 5; moisture 50 < 60 so not row 1) |
-|**Independence**: Changing moisture from 80→50 while temperature=3 changes outcome from Emergency Drainage→No Action, proving moisture independence |**Independence**: Changing time from 13:00→10:00 while moisture=8 changes outcome from Critical Watering→No Action, proving peak hours independence |
-
-### 7.3 Do Not Water (Row 3) – rain forecast AND moisture < 40
-
-| Test pair | Moisture | Rain? | Expected |
-|-----------|----------|-------|----------|
-| Pair A | 35 | true | Do Not Water (row 3) |
-| Pair B | 35 | false | Heavy Watering (row 4c; no rain, temp > 25, moisture 35 ≥ 20) |
-| **Independence**: Changing rain from true→false while moisture=35 changes outcome from Do Not Water→Heavy Watering, proving rain forecast independence |
-
-### 7.4 Heavy Watering vs Light Watering (Row 4) – no rain, temp > 25, moisture ≤ 40
-
-_Test pairs showing moisture boundary at 20 (Q6):_
-
-| Test pair | Moisture | Expected |
-|-----------|----------|----------|
-| Pair A | 35 | Light Watering (20 ≤ 35 ≤ 40, Q6) |
-| Pair B | 19 | Heavy Watering (19 < 20) |
-| **Independence**: Changing moisture from 35→19 while no rain & temp > 25 changes outcome from Light Watering→Heavy Watering, proving moisture threshold independence at 20 |
-
-_Test pairs showing peak hours effect within row 4:_
-
-| Test pair | Moisture | Time | Expected |
-|-----------|----------|------|----------|
-| Pair A | 30 | 13:00 (peak) | Postpone Watering (peak hours in row 4) |
-| Pair B | 30 | 10:00 (not peak) | Heavy Watering (30 ≥ 20, not peak) |
-| **Independence**: Changing time from 13:00→10:00 while moisture=30 changes outcome from Postpone Watering→Heavy Watering, proving peak hours independence within row 4 |
-
-### 7.5 No Action (Row 5) – none of the above
-
-| Test pair | Moisture | Temperature | Rain | Time | Expected |
-|-----------|----------|-------------|------|------|----------|
-| Pair A | 80 | 30 | false | 10:00 | No Action (row 5) |
-| Pair B | 80 | 30 | true | 10:00 | No Action (row 5; rain true but moisture 80 ≥ 40 so not row 3; no rain false so not row 4; → row 5) |
-| **Independence**: The combinations in rows 1-4 all fail, leaving only row 5, proving the negation coverage |
-
-### 7.6 Peak hours boundary tests
-
-| Test | Moisture | Temperature | Rain | Time | Expected |
-|------|----------|-------------|------|------|----------|
-| 11:59 | 5 | 3 | false | 11:59 | No Action (not peak, so not row 2; moisture 5 not > 60 so not row 1) |
-| 12:00 | 5 | 3 | false | 12:00 | Critical Watering (peak starts, row 2: 5 < 10) |
-| 15:59 | 5 | 3 | false | 15:59 | Critical Watering (still peak, row 2) |
-| 16:00 | 5 | 3 | false | 16:00 | No Action (peak ended, so not row 2; other rows don't match) |
+The peak-hours pairs exercise 11:59/12:00 and 15:59/16:00 independently. No Action is the fallback outcome and has no separate Boolean decision.
 
 ---
 
@@ -276,7 +231,7 @@ _Test pairs showing peak hours effect within row 4:_
 | Rain forecast | true, false | 2 |
 | Time of day | 00:00, 12:00, 23:59 | 3 |
 
-**Total minimum equivalence class tests: 3 × 2 × 2 × 3 = 36** (plus invalid case combinations)
+Select representatives for each class. A Cartesian product of values is not a minimum for equivalence-class coverage.
 
 ---
 
@@ -308,38 +263,38 @@ _Test pairs showing peak hours effect within row 4:_
 | 4 | 80 | 3 | false | 10:00 | Emergency Drainage | 1 | ✓ |
 | 5 | 70 | 3 | false | 10:00 | Emergency Drainage | 1 | ✓ |
 | 6 | 80 | 26 | false | 10:00 | No Action | 5 | ✓ |
-| 7 | 30 | 30 | false | 10:00 | Heavy Watering | 4c | ✓ |
+| 7 | 30 | 30 | false | 10:00 | Light Watering | 4c | ✓ |
 | 8 | 15 | 30 | false | 10:00 | Heavy Watering | 4b | ✓ |
 | 9 | 5 | 3 | true | 13:00 | Critical Watering | 2 | ✓ |
 | 10 | 5 | 3 | false | 13:00 | Critical Watering | 2 | ✓ |
 | 11 | 5 | 3 | true | 10:00 | Do Not Water | 3 | ✓ |
 | 12 | 35 | 30 | true | 13:00 | Do Not Water | 3 | ✓ |
-| 13 | 35 | 30 | false | 13:00 | Heavy Watering | 4c | ✓ |
-| 14 | 25 | 30 | false | 13:00 | Light Watering | 4c | ✓ |
-| 15 | 20 | 30 | false | 13:00 | Light Watering | 4c (Q6) | ✓ |
-| 16 | 19 | 30 | false | 13:00 | Heavy Watering | 4b | ✓ |
+| 13 | 35 | 30 | false | 13:00 | Postpone Watering | 4a | ✓ |
+| 14 | 25 | 30 | false | 13:00 | Postpone Watering | 4a | ✓ |
+| 15 | 20 | 30 | false | 13:00 | Postpone Watering | 4a | ✓ |
+| 16 | 19 | 30 | false | 13:00 | Postpone Watering | 4a | ✓ |
 | 17 | 15 | 30 | true | 13:00 | Do Not Water | 3 | ✓ |
 | 18 | 80 | 30 | false | 13:00 | No Action | 5 | ✓ |
 | 19 | 80 | 30 | true | 13:00 | No Action | 5 | ✓ |
 | 20 | 95 | 3 | true | 13:00 | Emergency Drainage | 1 | ✓ |
-| 21 | 95 | 6 | true | 13:00 | Critical Watering | 2 | ✓ |
-| 22 | 95 | 6 | false | 13:00 | Critical Watering | 2 | ✓ |
+| 21 | 95 | 6 | true | 13:00 | No Action | 5 | ✓ |
+| 22 | 95 | 6 | false | 13:00 | No Action | 5 | ✓ |
 | 23 | 45 | 30 | true | 13:00 | No Action | 5 | ✓ |
 | 24 | 45 | 30 | false | 13:00 | No Action | 5 | ✓ |
-| 25 | 35 | 30 | false | 13:30 | Light Watering | 4c | ✓ |
-| 26 | 25 | 30 | false | 13:30 | Light Watering | 4c | ✓ |
-| 27 | 20 | 30 | false | 13:30 | Light Watering | 4c (Q6) | ✓ |
-| 28 | 19 | 30 | false | 13:30 | Heavy Watering | 4b | ✓ |
+| 25 | 35 | 30 | false | 13:30 | Postpone Watering | 4a | ✓ |
+| 26 | 25 | 30 | false | 13:30 | Postpone Watering | 4a | ✓ |
+| 27 | 20 | 30 | false | 13:30 | Postpone Watering | 4a | ✓ |
+| 28 | 19 | 30 | false | 13:30 | Postpone Watering | 4a | ✓ |
 | 29 | 30 | 30 | true | 11:00 | Do Not Water | 3 | ✓ |
 | 30 | 30 | 30 | false | 11:00 | Light Watering | 4c | ✓ |
 | 31 | 5 | 3 | true | 13:00 | Critical Watering | 2 | ✓ |
 | 32 | 10 | 3 | false | 13:00 | No Action | 5 | ✓ |
 | 33 | 9 | 3 | false | 13:00 | Critical Watering | 2 | ✓ |
-| 34 | 9 | 3 | false | 11:00 | Critical Watering | 2 | ✓ |
+| 34 | 9 | 3 | false | 11:00 | No Action | 5 | ✓ |
 | 35 | 95 | 3 | true | 13:30 (peak) | Emergency Drainage | 1 | ✓ |
 | 36 | 70 | 3 | true | 13:30 (peak) | Emergency Drainage | 1 | ✓ |
-| 37 | 70 | 6 | true | 13:30 (peak) | Critical Watering | 2 | ✓ |
-| 38 | 70 | 6 | false | 13:30 (peak) | Critical Watering | 2 | ✓ |
+| 37 | 70 | 6 | true | 13:30 (peak) | No Action | 5 | ✓ |
+| 38 | 70 | 6 | false | 13:30 (peak) | No Action | 5 | ✓ |
 | 39 | 30 | 30 | true | 11:00 (not peak) | Do Not Water | 3 | ✓ |
 | 40 | 30 | 30 | false | 11:00 (not peak) | Light Watering | 4c | ✓ |
 | 41 | 5 | 3 | true | 13:00 | Critical Watering | 2 | ✓ |
