@@ -146,13 +146,13 @@ _Test design matrix with all 5 decision table rows covered, including boundary v
 | TC-04 | 80 | 3 | false | 10:00 | Emergency Drainage | 1 |
 | TC-05 | 70 | 3 | false | 10:00 | Emergency Drainage | 1 |
 | TC-06 | 80 | 26 | false | 10:00 | No Action | 5 |
-| TC-07 | 30 | 30 | false | 10:00 | Heavy Watering | 4c |
+| TC-07 | 30 | 30 | false | 10:00 | Light Watering | 4c |
 | TC-08 | 15 | 30 | false | 10:00 | Heavy Watering | 4b |
 | TC-09 | 5 | 3 | true | 13:00 | Critical Watering | 2 |
 | TC-10 | 5 | 3 | false | 13:00 | Critical Watering | 2 |
 | TC-11 | 5 | 3 | true | 10:00 | Do Not Water | 3 |
 | TC-12 | 35 | 30 | true | 13:00 | Do Not Water | 3 |
-| TC-13 | 35 | 30 | false | 13:00 | Heavy Watering | 4c |
+| TC-13 | 35 | 30 | false | 13:00 | Postpone Watering | 4a | ✓ |
 | TC-14 | 25 | 30 | false | 13:00 | Light Watering | 4c |
 | TC-15 | 20 | 30 | false | 13:00 | Light Watering | 4c (Q6: 20 ≤ moisture ≤ 40) |
 | TC-16 | 19 | 30 | false | 13:00 | Heavy Watering | 4b (moisture < 20) |
@@ -173,7 +173,7 @@ _Test design matrix with all 5 decision table rows covered, including boundary v
 | TC-31 | 5 | 3 | true | 13:00 | Critical Watering | 2 |
 | TC-32 | 10 | 3 | false | 13:00 | No Action | 5 |
 | TC-33 | 9 | 3 | false | 13:00 | Critical Watering | 2 |
-| TC-34 | 9 | 3 | false | 11:00 | Critical Watering | 2 |
+| TC-34 | 9 | 3 | false | 11:00 | No Action | 5 |
 | TC-35 | 95 | 3 | true | 13:30 (peak) | Emergency Drainage | 1 |
 | TC-36 | 70 | 3 | true | 13:30 (peak) | Emergency Drainage | 1 |
 | TC-37 | 70 | 6 | true | 13:30 (peak) | Critical Watering | 2 |
@@ -216,7 +216,9 @@ _For MC/DC compliance, we need to demonstrate that each condition independently 
 |-----------|----------|--------------|----------|
 | Pair A | 8 | 13:00 (peak) | Critical Watering (row 2) |
 | Pair B | 8 | 10:00 (not peak) | No Action (row 5; not peak hours, so not row 2; moisture 8<10 but no peak) |
-| **Independence**: Changing time from 13:00→10:00 while moisture=8 changes outcome from Critical Watering→No Action, proving peak hours independence |
+| 
+| Pair C | 50 | 3 | No Action (row 5; moisture 50 < 60 so not row 1) |
+|**Independence**: Changing moisture from 80→50 while temperature=3 changes outcome from Emergency Drainage→No Action, proving moisture independence |**Independence**: Changing time from 13:00→10:00 while moisture=8 changes outcome from Critical Watering→No Action, proving peak hours independence |
 
 ### 7.3 Do Not Water (Row 3) – rain forecast AND moisture < 40
 
