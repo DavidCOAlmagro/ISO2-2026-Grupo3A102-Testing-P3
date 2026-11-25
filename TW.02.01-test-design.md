@@ -143,9 +143,9 @@ _Test design matrix with all 5 decision table rows covered, including boundary v
 | TC-01 | 80 | 3 | true | 10:00 | Emergency Drainage | 1 |
 | TC-02 | 85 | 2 | true | 10:00 | Emergency Drainage | 1 |
 | TC-03 | 70 | 4 | true | 10:00 | Emergency Drainage | 1 |
-| TC-04 | 80 | 3 | false | 10:00 | No Action | 5 |
-| TC-05 | 70 | 3 | false | 10:00 | No Action | 5 |
-| TC-06 | 80 | 26 | false | 10:00 | Heavy Watering | 4c |
+| TC-04 | 80 | 3 | false | 10:00 | Emergency Drainage | 1 |
+| TC-05 | 70 | 3 | false | 10:00 | Emergency Drainage | 1 |
+| TC-06 | 80 | 26 | false | 10:00 | No Action | 5 |
 | TC-07 | 30 | 30 | false | 10:00 | Heavy Watering | 4c |
 | TC-08 | 15 | 30 | false | 10:00 | Heavy Watering | 4b |
 | TC-09 | 5 | 3 | true | 13:00 | Critical Watering | 2 |
@@ -160,8 +160,8 @@ _Test design matrix with all 5 decision table rows covered, including boundary v
 | TC-18 | 80 | 30 | false | 13:00 | No Action | 5 |
 | TC-19 | 80 | 30 | true | 13:00 | No Action | 5 |
 | TC-20 | 95 | 3 | true | 13:00 | Emergency Drainage | 1 |
-| TC-21 | 95 | 6 | true | 13:00 | No Action | 5 |
-| TC-22 | 95 | 6 | false | 13:00 | No Action | 5 |
+| TC-21 | 95 | 6 | true | 13:00 | Critical Watering | 2 |
+| TC-22 | 95 | 6 | false | 13:00 | Critical Watering | 2 |
 | TC-23 | 45 | 30 | true | 13:00 | No Action | 5 |
 | TC-24 | 45 | 30 | false | 13:00 | No Action | 5 |
 | TC-25 | 35 | 30 | false | 13:30 | Light Watering | 4c |
@@ -169,18 +169,18 @@ _Test design matrix with all 5 decision table rows covered, including boundary v
 | TC-27 | 20 | 30 | false | 13:30 | Light Watering | 4c (Q6) |
 | TC-28 | 19 | 30 | false | 13:30 | Heavy Watering | 4b |
 | TC-29 | 30 | 30 | true | 11:00 | Do Not Water | 3 |
-| TC-30 | 30 | 30 | false | 11:00 | Heavy Watering | 4c |
-| TC-31 | 5 | 3 | true | 13:00 | Do Not Water | 3 |
-| TC-32 | 10 | 3 | false | 13:00 | Heavy Watering | 4b |
+| TC-30 | 30 | 30 | false | 11:00 | Light Watering | 4c |
+| TC-31 | 5 | 3 | true | 13:00 | Critical Watering | 2 |
+| TC-32 | 10 | 3 | false | 13:00 | No Action | 5 |
 | TC-33 | 9 | 3 | false | 13:00 | Critical Watering | 2 |
 | TC-34 | 9 | 3 | false | 11:00 | Critical Watering | 2 |
 | TC-35 | 95 | 3 | true | 13:30 (peak) | Emergency Drainage | 1 |
 | TC-36 | 70 | 3 | true | 13:30 (peak) | Emergency Drainage | 1 |
-| TC-37 | 70 | 6 | true | 13:30 (peak) | No Action | 5 |
-| TC-38 | 70 | 6 | false | 13:30 (peak) | No Action | 5 |
+| TC-37 | 70 | 6 | true | 13:30 (peak) | Critical Watering | 2 |
+| TC-38 | 70 | 6 | false | 13:30 (peak) | Critical Watering | 2 |
 | TC-39 | 30 | 30 | true | 11:00 (not peak) | Do Not Water | 3 |
-| TC-40 | 30 | 30 | false | 11:00 (not peak) | Heavy Watering | 4c |
-| TC-41 | 5 | 3 | true | 13:00 | Do Not Water | 3 |
+| TC-40 | 30 | 30 | false | 11:00 (not peak) | Light Watering | 4c |
+| TC-41 | 5 | 3 | true | 13:00 | Critical Watering | 2 |
 | TC-42 | 80 | 30 | false | 13:00 | No Action | 5 |
 | TC-43 | 80 | 30 | true | 13:00 | No Action | 5 |
 
@@ -249,8 +249,7 @@ _Test pairs showing peak hours effect within row 4:_
 | Test pair | Moisture | Temperature | Rain | Time | Expected |
 |-----------|----------|-------------|------|------|----------|
 | Pair A | 80 | 30 | false | 10:00 | No Action (row 5) |
-| Pair B | 80 | 3 | false | 10:00 | No Action (row 5; moisture > 60 but temp 3 < 5, but wait... actually row 1 requires BOTH moisture > 60 AND temp < 5, so with temp=3 it IS row 1. Let me use different values) |
-| **Corrected Pair B** | 80 | 30 | true | 10:00 | No Action (row 5; rain true but moisture 80 ≥ 40 so not row 3; no rain false so not row 4; → row 5) |
+| Pair B | 80 | 30 | true | 10:00 | No Action (row 5; rain true but moisture 80 ≥ 40 so not row 3; no rain false so not row 4; → row 5) |
 | **Independence**: The combinations in rows 1-4 all fail, leaving only row 5, proving the negation coverage |
 
 ### 7.6 Peak hours boundary tests
@@ -304,9 +303,9 @@ _Test pairs showing peak hours effect within row 4:_
 | 1 | 80 | 3 | true | 10:00 | Emergency Drainage | 1 | ✓ |
 | 2 | 85 | 2 | true | 10:00 | Emergency Drainage | 1 | ✓ |
 | 3 | 70 | 4 | true | 10:00 | Emergency Drainage | 1 | ✓ |
-| 4 | 80 | 3 | false | 10:00 | No Action | 5 | ✓ |
-| 5 | 70 | 3 | false | 10:00 | No Action | 5 | ✓ |
-| 6 | 80 | 26 | false | 10:00 | Heavy Watering | 4c | ✓ |
+| 4 | 80 | 3 | false | 10:00 | Emergency Drainage | 1 | ✓ |
+| 5 | 70 | 3 | false | 10:00 | Emergency Drainage | 1 | ✓ |
+| 6 | 80 | 26 | false | 10:00 | No Action | 5 | ✓ |
 | 7 | 30 | 30 | false | 10:00 | Heavy Watering | 4c | ✓ |
 | 8 | 15 | 30 | false | 10:00 | Heavy Watering | 4b | ✓ |
 | 9 | 5 | 3 | true | 13:00 | Critical Watering | 2 | ✓ |
@@ -321,8 +320,8 @@ _Test pairs showing peak hours effect within row 4:_
 | 18 | 80 | 30 | false | 13:00 | No Action | 5 | ✓ |
 | 19 | 80 | 30 | true | 13:00 | No Action | 5 | ✓ |
 | 20 | 95 | 3 | true | 13:00 | Emergency Drainage | 1 | ✓ |
-| 21 | 95 | 6 | true | 13:00 | No Action | 5 | ✓ |
-| 22 | 95 | 6 | false | 13:00 | No Action | 5 | ✓ |
+| 21 | 95 | 6 | true | 13:00 | Critical Watering | 2 | ✓ |
+| 22 | 95 | 6 | false | 13:00 | Critical Watering | 2 | ✓ |
 | 23 | 45 | 30 | true | 13:00 | No Action | 5 | ✓ |
 | 24 | 45 | 30 | false | 13:00 | No Action | 5 | ✓ |
 | 25 | 35 | 30 | false | 13:30 | Light Watering | 4c | ✓ |
@@ -330,18 +329,18 @@ _Test pairs showing peak hours effect within row 4:_
 | 27 | 20 | 30 | false | 13:30 | Light Watering | 4c (Q6) | ✓ |
 | 28 | 19 | 30 | false | 13:30 | Heavy Watering | 4b | ✓ |
 | 29 | 30 | 30 | true | 11:00 | Do Not Water | 3 | ✓ |
-| 30 | 30 | 30 | false | 11:00 | Heavy Watering | 4c | ✓ |
-| 31 | 5 | 3 | true | 13:00 | Do Not Water | 3 | ✓ |
-| 32 | 10 | 3 | false | 13:00 | Heavy Watering | 4b | ✓ |
+| 30 | 30 | 30 | false | 11:00 | Light Watering | 4c | ✓ |
+| 31 | 5 | 3 | true | 13:00 | Critical Watering | 2 | ✓ |
+| 32 | 10 | 3 | false | 13:00 | No Action | 5 | ✓ |
 | 33 | 9 | 3 | false | 13:00 | Critical Watering | 2 | ✓ |
 | 34 | 9 | 3 | false | 11:00 | Critical Watering | 2 | ✓ |
 | 35 | 95 | 3 | true | 13:30 (peak) | Emergency Drainage | 1 | ✓ |
 | 36 | 70 | 3 | true | 13:30 (peak) | Emergency Drainage | 1 | ✓ |
-| 37 | 70 | 6 | true | 13:30 (peak) | No Action | 5 | ✓ |
-| 38 | 70 | 6 | false | 13:30 (peak) | No Action | 5 | ✓ |
+| 37 | 70 | 6 | true | 13:30 (peak) | Critical Watering | 2 | ✓ |
+| 38 | 70 | 6 | false | 13:30 (peak) | Critical Watering | 2 | ✓ |
 | 39 | 30 | 30 | true | 11:00 (not peak) | Do Not Water | 3 | ✓ |
-| 40 | 30 | 30 | false | 11:00 (not peak) | Heavy Watering | 4c | ✓ |
-| 41 | 5 | 3 | true | 13:00 | Do Not Water | 3 | ✓ |
+| 40 | 30 | 30 | false | 11:00 (not peak) | Light Watering | 4c | ✓ |
+| 41 | 5 | 3 | true | 13:00 | Critical Watering | 2 | ✓ |
 | 42 | 80 | 30 | false | 13:00 | No Action | 5 | ✓ |
 | 43 | 80 | 30 | true | 13:00 | No Action | 5 | ✓ |
 
