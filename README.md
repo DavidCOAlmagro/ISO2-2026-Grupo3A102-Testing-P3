@@ -26,6 +26,29 @@ mvn verify
 
 > Until Step 3 the coverage check only shows a warning (`haltOnFailure` is `false` in `pom.xml`), because the program is written before its tests. Pair 2 sets `haltOnFailure` to `true` in Step 3.
 
+## Run the program
+
+```
+mvn package
+java -jar target/ISO2-2026-Grupo3A102-Testing-P3-0.1.0-SNAPSHOT.jar
+```
+
+The program asks for the soil moisture (%), the temperature (°C), whether rain is forecast in the next 24 hours (`y`/`n`) and the time of day (`HH:mm`, from `00:00` to `23:59`; `24:00` is not accepted), and shows the recommendation. Decimal numbers are written with a dot, for example `35.5`. It handles one set of conditions per run.
+
+- If a value is not a number, not `y`/`n` or not a time, the program explains why and asks for that value again.
+- If the data are out of range (Q1), the domain rejects them: the program shows the reason and asks for the four values again.
+
+Example:
+
+```
+Irrigation advisor
+Soil moisture (%): 15
+Temperature (Celsius): 30
+Rain forecast in the next 24 hours? (y/n): n
+Time of day (HH:mm): 9:30
+Recommendation: Heavy Watering
+```
+
 ## Structure
 
 | Package | Content |
